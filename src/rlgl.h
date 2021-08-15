@@ -691,16 +691,16 @@ RLAPI void rlLoadDrawQuad(void);     // Load and draw a quad
 #if defined(GRAPHICS_API_OPENGL_ES2)
     #define GL_GLEXT_PROTOTYPES
     //#include <EGL/egl.h>              // EGL library -> not required, platform layer
-    #include <GLES2/gl2.h>              // OpenGL ES 2.0 library
-    #include <GLES2/gl2ext.h>           // OpenGL ES 2.0 extensions library
+    #include <GLES3/gl3.h>              // OpenGL ES 2.0 library
+    #include <GLES3/gl3ext.h>           // OpenGL ES 2.0 extensions library
 
     // It seems OpenGL ES 2.0 instancing entry points are not defined on Raspberry Pi
     // provided headers (despite being defined in official Khronos GLES2 headers)
-    #if defined(PLATFORM_RPI) || defined(PLATFORM_DRM)
+    /*#if defined(PLATFORM_RPI) || defined(PLATFORM_DRM)
     typedef void (GL_APIENTRYP PFNGLDRAWARRAYSINSTANCEDEXTPROC) (GLenum mode, GLint start, GLsizei count, GLsizei primcount);
     typedef void (GL_APIENTRYP PFNGLDRAWELEMENTSINSTANCEDEXTPROC) (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei primcount);
     typedef void (GL_APIENTRYP PFNGLVERTEXATTRIBDIVISOREXTPROC) (GLuint index, GLuint divisor);
-    #endif
+    #endif*/
 #endif
 
 #include <stdlib.h>                     // Required for: malloc(), free()
@@ -903,14 +903,14 @@ static rlglData RLGL = { 0 };
 
 #if defined(GRAPHICS_API_OPENGL_ES2)
 // NOTE: VAO functionality is exposed through extensions (OES)
-static PFNGLGENVERTEXARRAYSOESPROC glGenVertexArrays = NULL;
+/*static PFNGLGENVERTEXARRAYSOESPROC glGenVertexArrays = NULL;
 static PFNGLBINDVERTEXARRAYOESPROC glBindVertexArray = NULL;
 static PFNGLDELETEVERTEXARRAYSOESPROC glDeleteVertexArrays = NULL;
 
 // NOTE: Instancing functionality could also be available through extension
 static PFNGLDRAWARRAYSINSTANCEDEXTPROC glDrawArraysInstanced = NULL;
 static PFNGLDRAWELEMENTSINSTANCEDEXTPROC glDrawElementsInstanced = NULL;
-static PFNGLVERTEXATTRIBDIVISOREXTPROC glVertexAttribDivisor = NULL;
+static PFNGLVERTEXATTRIBDIVISOREXTPROC glVertexAttribDivisor = NULL;*/
 #endif
 
 //----------------------------------------------------------------------------------
@@ -1891,7 +1891,7 @@ void rlLoadExtensions(void *loader)
     {
         // Check VAO support
         // NOTE: Only check on OpenGL ES, OpenGL 3.3 has VAO support as core feature
-        if (strcmp(extList[i], (const char *)"GL_OES_vertex_array_object") == 0)
+        /*if (strcmp(extList[i], (const char *)"GL_OES_vertex_array_object") == 0)
         {
             // The extension is supported by our hardware and driver, try to get related functions pointers
             // NOTE: emscripten does not support VAOs natively, it uses emulation and it reduces overall performance...
@@ -1923,7 +1923,7 @@ void rlLoadExtensions(void *loader)
 
                 if ((glDrawArraysInstanced != NULL) && (glDrawElementsInstanced != NULL) && (glVertexAttribDivisor != NULL)) RLGL.ExtSupported.instancing = true;
             }
-        }
+        }*/
 
         // Check NPOT textures support
         // NOTE: Only check on OpenGL ES, OpenGL 3.3 has NPOT textures full support as core feature
@@ -2675,8 +2675,8 @@ unsigned int rlLoadTextureDepth(int width, int height, bool useRenderBuffer)
     unsigned int glInternalFormat = GL_DEPTH_COMPONENT;
 
 #if defined(GRAPHICS_API_OPENGL_ES2)
-    if (RLGL.ExtSupported.maxDepthBits == 32) glInternalFormat = GL_DEPTH_COMPONENT32_OES;
-    else if (RLGL.ExtSupported.maxDepthBits == 24) glInternalFormat = GL_DEPTH_COMPONENT24_OES;
+    if (RLGL.ExtSupported.maxDepthBits == 32) glInternalFormat = GL_DEPTH_COMPONENT32F;
+    else if (RLGL.ExtSupported.maxDepthBits == 24) glInternalFormat = GL_DEPTH_COMPONENT24;
     else glInternalFormat = GL_DEPTH_COMPONENT16;
 #endif
 
