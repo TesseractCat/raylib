@@ -4226,7 +4226,7 @@ static bool InitGraphicsDevice(int width, int height)
 #endif  // PLATFORM_DRM
 
     // There must be at least one frame displayed before the buffers are swapped
-    //eglSwapInterval(CORE.Window.device, 1);
+    eglSwapInterval(CORE.Window.device, 0);
 
     if (eglMakeCurrent(CORE.Window.device, CORE.Window.surface, CORE.Window.surface, CORE.Window.context) == EGL_FALSE)
     {
